@@ -6,7 +6,7 @@ import openai_bot
 import prefix
 
 # ボットのトークンをセット
-TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.GJ1rIW.7IB6CQ20lf9YsdO_EdKZNsml62TrrumikF7g5w'
+TOKEN = 'Discord botのAPI key'
 
 func_N = 3
 func_name_list = ['login','change_edit','voice_hello_user']
