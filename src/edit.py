@@ -41,8 +41,8 @@ def run():
         if(isPermissionRequested==0 and Kitbot.user.mentioned_in(message)):
             if "!command" in message.content and Kitbot.user.mentioned_in(message):
                 await message.channel.send('''```diff
-    +change command mode!!
-    ```''')
++change command mode!!
+```''')
                 await Kitbot.close()
                 return
 

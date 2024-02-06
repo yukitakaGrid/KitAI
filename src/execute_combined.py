@@ -39,6 +39,14 @@ def run():
 
 
 
+    # on_voice_state_update
+    @bot.event
+    async def on_voice_state_update(member, before, after):
+        if before.channel is None and after.channel is not None:
+            await member.send("Hello!")
+        return
+    
+
     bot.run(TOKEN)
 
     # botインスタンスへの参照を削除
