@@ -4,7 +4,7 @@ import openai
 class GPT4_0:
     def __init__(self):
         openai.organization = os.environ.get("org-aSq6cg3kqopgOyZ3WUZneVYj")
-        openai.api_key = "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"
+        openai.api_key = "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"
 
         self.prompt_prefix = '''
         あなたはdiscord.pyのプログラマーです。求められた機能に対して、適するイベント関数を実装してください。なお説明はいらず、
