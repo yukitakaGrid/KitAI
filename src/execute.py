@@ -39,6 +39,6 @@ def run():
     bot.run(TOKEN)
 
     # botインスタンスへの参照を削除
-    del bot
+    bot = None
 
     return
