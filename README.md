@@ -7,6 +7,7 @@ This product's slide.
 https://www.canva.com/design/DAFsDdJhtgQ/8kH_baIP2xj3stJ0DI2JRA/view#9
 
 ## How to use
+このbotはedit modeとcommand modeの2種類のモードが存在します。デフォルトはcommand modeです。
 
 ## Reference
 
