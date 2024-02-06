@@ -3,14 +3,16 @@ import execute
 import edit
 import subprocess
 
+# 0のときシンプルなdiscord botの起動
+# 1のとき構文が結合されたdiscord botの起動
 counter = [0]
 
 def task1(event1, event2):
     while True:
-        event1.wait()  # executeを実行可能にする
+        event1.wait()  # 実行可能になるまで待機
         if counter[0] == 0:
             print('executeを実行します')
-            execute.run()
+            execute.run() # execute.pyの実行
             counter[0] += 1;
         elif counter[0] == 1:
             print('subprocess.runを使ってexecute_combinedを実行します')
@@ -20,7 +22,7 @@ def task1(event1, event2):
 
 def task2(event1, event2):
     while True:
-        event2.wait()  # editを実行可能にする
+        event2.wait()  # 実行可能になるまで待機
         print('editを実行します')
         edit.run()
         event2.clear()
@@ -36,6 +38,7 @@ if __name__ == '__main__':
     p1 = multiprocessing.Process(target=task1, args=(event1, event2))
     p2 = multiprocessing.Process(target=task2, args=(event1, event2))
 
+    print("編集プログラムと実行プログラムの非同期処理を開始します")
     p1.start()
     p2.start()
 

@@ -4,7 +4,7 @@ import openai
 class GPT3_5:
     def __init__(self):
         openai.organization = os.environ.get("org-aSq6cg3kqopgOyZ3WUZneVYj")
-        openai.api_key = "your chatgpt key"
+        openai.api_key = "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"
 
         self.prompt_prefix = '''
         求められた機能に対して、適するイベント関数を実装してください。なお説明はいらず、

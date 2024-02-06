@@ -2,7 +2,9 @@ import discord
 from discord.ext import commands
 
 # ボットのトークンをセット
-TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.GJ1rIW.7IB6CQ20lf9YsdO_EdKZNsml62TrrumikF7g5w'
+TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.G-edaX.XC19pqWBTv8jmWixbHnuBSlhH6yMB1Rh3Tte00'
+
+isStand = 0
 
 def run():
     # ボットの接続準備
@@ -19,37 +21,24 @@ def run():
 
     @bot.event
     async def on_message(message):
+        global isStand
+        if(isStand==0 and bot.user.mentioned_in(message)):
+            await message.channel.send('Hello! My name is KitAI. Support your Discord life☺')
+            isStand = 1
+        print(f"{message.author} mended {bot.user}")
         if message.author == bot.user:
             return 
 
-        # Check if "make" is in the message and if the bot is mentioned
         if "!edit" in message.content and bot.user.mentioned_in(message):
             await message.channel.send('''```diff
-+Edit Modeに切り替わりました
++change edit mode!!
 ```''')
             await bot.close()
             return
-        
-    # voice_hello_user
-    @bot.event
-    async def on_voice_state_update(member, before, after):
-        if after.channel:  # ボイスチャンネルに入った場合
-            guild = member.guild  # メンバーが所属しているサーバー（ギルド）を取得
 
-            # 送信先の一般チャンネルを取得（チャンネル名に応じて調整してください）
-            channel_name = '一般'  # 送信先のチャンネル名
-            general_channel = discord.utils.get(guild.text_channels, name=channel_name)
-
-            if general_channel:
-                await general_channel.send(f'Hello, {member.display_name}! {member.mention} joined a voice channel.')
-
-            return
-    ##########
-
-    print("botを実行します")
     bot.run(TOKEN)
 
     # botインスタンスへの参照を削除
-    bot = None
+    del bot
 
     return

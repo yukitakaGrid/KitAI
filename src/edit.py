@@ -6,7 +6,7 @@ import openai_bot
 import prefix
 
 # ボットのトークンをセット
-TOKEN = 'Discord botのAPI key'
+TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.G-edaX.XC19pqWBTv8jmWixbHnuBSlhH6yMB1Rh3Tte00'
 
 func_N = 3
 func_name_list = ['login','change_edit','voice_hello_user']
@@ -27,16 +27,19 @@ def run():
 
     @Kitbot.event
     async def on_message(message):
+        print(f"{message.author} mended {Kitbot.user}")
         if message.author == Kitbot.user:
             return 
 
         # Check if "make" is in the message and if the bot is mentioned
         if "!command" in message.content and Kitbot.user.mentioned_in(message):
-            await message.channel.send('Command Mode に切り替わりました')
+            await message.channel.send('''```diff
++change command mode!!
+```''')
             await Kitbot.close()
             return
 
-        elif "!func" in message.content and Kitbot.user.mentioned_in(message):
+        elif "!display" in message.content and Kitbot.user.mentioned_in(message):
             # func_name_listの中身を表示
             func_name_list_str = ""
             for i in range(len(func_name_list)):
@@ -70,7 +73,6 @@ def run():
         # This is needed to process commands if you have any
         await Kitbot.process_commands(message)
 
-    print("botを実行します")
     Kitbot.run(TOKEN)
 
     # botインスタンスへの参照を削除
