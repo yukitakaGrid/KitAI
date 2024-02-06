@@ -1,7 +1,7 @@
 import os
 import openai
 
-class GPT3_5:
+class GPT4_0:
     def __init__(self):
         openai.organization = os.environ.get("org-aSq6cg3kqopgOyZ3WUZneVYj")
         openai.api_key = "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"
@@ -13,6 +13,7 @@ class GPT3_5:
         なくすために組んだコードは一度目視でコンパイルエラーチェックしてから再度組み直してください
         以下フォーマットです。
         
+        # <あなたが実装する関数の名前をここに代入してください>
         <@イベントのコマンドエクステンションをここに記述>
         async def <関数名>():
             <以下プログラムの実装>

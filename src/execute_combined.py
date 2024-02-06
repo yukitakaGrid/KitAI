@@ -91,6 +91,40 @@ def run():
     ##########
     ```
 
+    ```python
+    @client.event
+    async def on_message(message):
+        if message.author == client.user:
+            return
+    
+        if message.content == "hello":
+            await message.channel.send("Hello!")
+            return
+    ##########
+    ```
+
+    ```python
+    # 実装する関数名をここに記述
+    @client.event
+    async def on_message(message):
+        if message.author == client.user:
+            return
+    
+        if message.content.startswith('hello'):
+            await message.channel.send('Hello!')
+        return
+    ##########
+    ```
+
+    ```python
+    # hello_command
+    @bot.command()
+    async def hello(ctx):
+        await ctx.send('Hello!')
+        return
+    ##########
+    ```
+
     bot.run(TOKEN)
 
     # botインスタンスへの参照を削除

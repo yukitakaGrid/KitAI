@@ -14,7 +14,7 @@ add_func = ""
 func_N = 3
 func_name_list = ['login','change_edit','voice_hello_user']
 
-gpt3_5 = openai_bot.GPT3_5()
+gpt4_0 = openai_bot.GPT4_0()
 
 def run():
     # ボットの接続準備
@@ -56,7 +56,7 @@ def run():
                 return 
 
             elif Kitbot.user.mentioned_in(message):
-                contents = gpt3_5.interaction(message.content)
+                contents = gpt4_0.interaction(message.content)
 
                 # 関数名を抽出
                 # 文章を改行で分割し、各行の最初の#の後ろの単語を抽出する
