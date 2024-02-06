@@ -23,3 +23,6 @@ pip install discord.py
 このbotはedit modeとcommand modeの2種類のモードが存在します。デフォルトはcommand modeです。
 
 ### Example
+
+## Note
+システムの設計上データを保持する必要のあるコマンドの自動的な実装は難しいです。
