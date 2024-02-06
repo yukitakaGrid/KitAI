@@ -6,9 +6,20 @@
 This product's slide.
 https://www.canva.com/design/DAFsDdJhtgQ/8kH_baIP2xj3stJ0DI2JRA/view#9
 
+## Version
+
+OpenAI : gpt-4-turbo-preview
+
+
 ## How to use
-このbotはedit modeとcommand modeの2種類のモードが存在します。デフォルトはcommand modeです。
+事前に必要なライブラリをインストールしておきます。
+'''
+pip install openai
+pip install discord.py
+'''
+
 
 ## Reference
+このbotはedit modeとcommand modeの2種類のモードが存在します。デフォルトはcommand modeです。
 
 ### Example
