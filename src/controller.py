@@ -2,6 +2,7 @@ import multiprocessing
 import execute
 import edit
 import subprocess
+import syntax_make
 
 # 0のときシンプルなdiscord botの起動
 # 1のとき構文が結合されたdiscord botの起動
@@ -12,11 +13,17 @@ def task1(event1, event2):
         event1.wait()  # 実行可能になるまで待機
         if counter[0] == 0:
             print('executeを実行します')
-            execute.run() # execute.pyの実行
+            execute.run(0) # execute.pyの実行
             counter[0] += 1;
-        elif counter[0] == 1:
-            print('subprocess.runを使ってexecute_combinedを実行します')
-            subprocess.run(['python', 'execute_combined.py'])
+        else:
+            try:
+                print('execute_combinedをコンパイルし、実行します')
+                result = subprocess.run(['python', 'execute_combined.py'], check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                print(result.stdout)
+            except subprocess.CalledProcessError as e:
+                print(f'コンパイルに失敗しました: {e.stderr}')
+                execute.run(-1) # 緊急でexecute.py実行
+
         event1.clear()
         event2.set()  # editを実行可能にする
 

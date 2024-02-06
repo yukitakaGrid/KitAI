@@ -6,7 +6,7 @@ TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.G-edaX.XC19pqWBTv8jmWixbHnuBSlhH6yMB1Rh3Tte0
 
 isStand = 0
 
-def run():
+def run(e):
     # ボットの接続準備
     intents = discord.Intents.default()
     intents.voice_states = True  # ボイスチャンネルの情報を取得するために必要
@@ -16,7 +16,7 @@ def run():
     # discordと接続した時に呼ばれる
     @bot.event
     async def on_ready():
-        print(f'We have logged in as {bot.user}')
+        print(f'We have logged in as {bot.user} : execute')
         return
 
     @bot.event
@@ -25,7 +25,9 @@ def run():
         if(isStand==0 and bot.user.mentioned_in(message)):
             await message.channel.send('Hello! My name is KitAI. Support your Discord life☺')
             isStand = 1
-        print(f"{message.author} mended {bot.user}")
+        elif(e==-1):
+            await message.channel.send('Some error occurred, so I switched to emergency command mode. Check the console for details.')
+        print(f"{message.author} mended {bot.user} : execute")
         if message.author == bot.user:
             return 
 

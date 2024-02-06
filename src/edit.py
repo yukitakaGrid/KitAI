@@ -26,19 +26,19 @@ def run():
     # discordと接続した時に呼ばれる
     @Kitbot.event
     async def on_ready():
-        print(f'We have logged in as {Kitbot.user}')
+        print(f'We have logged in as {Kitbot.user} : edit')
 
     @Kitbot.event
     async def on_message(message):
         global isPermissionRequested
         global keywords
         global add_func
-        print(f"{message.author} mended {Kitbot.user}")
+        print(f"{message.author} mended {Kitbot.user} : edit")
         if message.author == Kitbot.user:
             return 
 
         # Check if "make" is in the message and if the bot is mentioned
-        if(isPermissionRequested==0):
+        if(isPermissionRequested==0 and Kitbot.user.mentioned_in(message)):
             if "!command" in message.content and Kitbot.user.mentioned_in(message):
                 await message.channel.send('''```diff
     +change command mode!!
@@ -55,7 +55,8 @@ def run():
                 await message.channel.send(func_name_list_str_color)
                 return 
 
-            elif Kitbot.user.mentioned_in(message):
+            else:
+                await message.channel.send("Ok! Wait a moment, I'll think about it...")
                 contents = gpt4_0.interaction(message.content)
 
                 # 関数名を抽出
@@ -63,24 +64,40 @@ def run():
                 lines = contents.split('\n')
                 keywords = [line.split('#', 1)[-1].strip().split()[0] for line in lines if line.strip().startswith('#')]
                 # 関数名をリストの先頭に追加
-                func_name_list.insert(0, keywords[0])
+                if keywords:
+                    func_name_list.insert(0, keywords[0])
+                else:
+                    await message.channel.send("具体的なコマンド要求を満たしていません。プログラムの構築には明確な要求（機能の説明や目的など）が必要です。詳細を提供していただければ、適切なコードを作成いたします。")
+                    return
                 global func_N
                 func_N += 1
 
-                await message.channel.send(f"以下のコードの実装を許可しますか？Yes/No")
-                await message.channel.send(f"コード内容:{contents}")
+                add_func = "\n\n"
+
+                # コードの切り抜き
+                on_etract = 0
+                contents_code = ""
+                for line in lines:
+                    # '#'が来たらコードの切り抜き開始
+                    # 再度'#'が来たらコードの切り抜き終了
+                    if(line.strip().startswith('#')):
+                        on_etract = abs(on_etract-1)
+                    if(on_etract==1):
+                        contents_code += line + "\n"
 
                 # GPTから取得したコードを字下げする
-                contents = prefix.indent_text(contents)
-                add_func = "\n\n"
-                add_func += contents
+                contents_code = prefix.indent_text(contents_code)
+                add_func += contents_code
+
+                await message.channel.send(f"以下のコードの実装を許可する？Yes/No")
+                await message.channel.send(f"コード内容 :```{contents_code}```")
 
                 isPermissionRequested = 1
                 return
                 
         
-        if(isPermissionRequested==1):
-            if "Yes" in message.content and Kitbot.user.mentioned_in(message):
+        if(isPermissionRequested==1 and Kitbot.user.mentioned_in(message)):
+            if "Yes" in message.content:
                 keyword_color = prefix.green_lines_with_prefix(keywords[0] + "を実装しました","+")
                 await message.channel.send(keyword_color)
 
@@ -89,10 +106,13 @@ def run():
                 isPermissionRequested = 0
                 return 
             
-            elif "No" in message.content and Kitbot.user.mentioned_in(message):
+            elif "No" in message.content:
                 await message.channel.send("変更内容を破棄しました。")
                 isPermissionRequested = 0
                 return
+            
+            else:
+                await message.channel.send("can only accept Yes/No")
 
         # This is needed to process commands if you have any
         await Kitbot.process_commands(message)

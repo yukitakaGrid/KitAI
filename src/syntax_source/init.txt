@@ -14,14 +14,14 @@ def run():
     # login
     @bot.event
     async def on_ready():
-        print(f'We have logged in as {bot.user}')
+        print(f'We have logged in as {bot.user} : execute_combined')
         return
     ##########
 
     # change_edit
     @bot.event
     async def on_message(message):
-        print(f"{message.author} mended {bot.user}")
+        print(f"{message.author} mended {bot.user} : execute_combined")
         if message.author == bot.user:
             return 
 
