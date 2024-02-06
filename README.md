@@ -3,7 +3,5 @@
 
 <img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_greed.png width="50%" />
 
-Discord bot 招待URL : https://discord.com/api/oauth2/authorize?client_id=1141648466737635388&permissions=8&scope=bot
-
 This product's slide.
 https://www.canva.com/design/DAFsDdJhtgQ/8kH_baIP2xj3stJ0DI2JRA/view#9
