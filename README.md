@@ -13,10 +13,10 @@ OpenAI : gpt-4-turbo-preview
 
 ## How to use
 事前に必要なライブラリをインストールしておきます。
-'''
+```
 pip install openai
 pip install discord.py
-'''
+```
 
 
 ## Reference
