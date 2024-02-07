@@ -96,3 +96,8 @@ command modeに変更したい場合は
 
 ## Note
 システムの設計上データを保持する必要のあるコマンドの自動的な実装は難しいです。
+
+botで使用した画像  
+<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI.jpg
+ width="50%" />  
+ 作 : DALL-E 3 
