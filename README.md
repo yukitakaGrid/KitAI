@@ -12,15 +12,14 @@ OpenAI : gpt-4-turbo-preview
 Python : 3.12.1
 
 ## How to set
+このリモートリポジトリをクローンします。
+```
+git clone https://github.com/yukitakaGrid/KitAI.git
+```
 事前に必要なライブラリをインストールしておきます。
 ```
 pip install openai
 pip install discord.py
-```
-
-このリモートリポジトリをクローンします。
-```
-git clone https://github.com/yukitakaGrid/KitAI.git
 ```
 
 次に、DiscordのDeveloperのwebページでbotの作成をし、トークンを発行します。
