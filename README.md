@@ -35,6 +35,7 @@ https://platform.openai.com/docs/overview
 
 最後に任意のチャンネルに作成したbotを招待し、
 ```
+cd src
 python main.py
 ```
 で起動すれば完了です。
