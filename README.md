@@ -6,12 +6,12 @@
 This product's slide.  
 https://www.canva.com/design/DAFsDdJhtgQ/8kH_baIP2xj3stJ0DI2JRA/view#9
 
-## Version
+# Version
 
 OpenAI : gpt-4-turbo-preview  
 Python : 3.12.1
 
-## How to set
+# How to set
 このリモートリポジトリをクローンします。
 ```
 git clone https://github.com/yukitakaGrid/KitAI.git
@@ -39,7 +39,7 @@ python main.py
 ```
 で起動すれば完了です。
 
-## Reference
+# Reference
 このbotはedit modeとcommand modeの2種類のモードが存在します。デフォルトはcommand modeです。
 
 ### command mode
@@ -69,26 +69,30 @@ command modeに変更したい場合は
 ```
 とメンションし!commandコマンドを与えることでモードが変更されます。
 
-### AI Prompt Example
+# AI Prompt Example
 ##### example 1
 ```
 @KitAI 猫語で話しかけたら猫語で返すコマンドをお願いします
 ```
-<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_nyan_code.png width="50%" />
+<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_nyan_code.png width="50%" /> 
+
 ```
 @KitAI Yes
 ```
-<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_nyan.png width="50%" />
+
+<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_nyan.png width="50%" />  
 
 ##### example 2
 ```
 @KitAI "お前"という単語を含んでいたらそのメッセージを消去して警告を送るコマンドをお願いします
 ```
-<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_delete_code.png width="50%" />
+<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_delete_code.png width="50%" />  
+
 ```
 @KitAI Yes
 ```
-<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_delete.png width="50%" />
+
+<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_delete.png width="50%" />  
 
 ## Note
 システムの設計上データを保持する必要のあるコマンドの自動的な実装は難しいです。
