@@ -3,12 +3,12 @@
 
 <img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_greed.png width="50%" />
 
-This product's slide.
+This product's slide.  
 https://www.canva.com/design/DAFsDdJhtgQ/8kH_baIP2xj3stJ0DI2JRA/view#9
 
 ## Version
 
-OpenAI : gpt-4-turbo-preview
+OpenAI : gpt-4-turbo-preview  
 Python : 3.12.1
 
 ## How to set
@@ -41,6 +41,33 @@ python main.py
 
 ## Reference
 このbotはedit modeとcommand modeの2種類のモードが存在します。デフォルトはcommand modeです。
+
+### command mode
+このモードは実装された機能を使うことができるモードです。基本的にはこちらの状態でサーバに置いておきます。
+
+機能をAIに実装させたい場合は
+```
+@KitAI !edit
+```
+とメンションし!editコマンドを与えることでモードが変更されます。
+以下が返ってきたら成功です。
+<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_change_edit.png width="50%" />
+
+### edit mode
+このモードはAIに依頼をすることで任意の機能を自動的に実装をしてくれるAI編集モードです。
+KitAIをメンションし、実装したい機能内容を送ることでAIが最適なプログラムを考え実装します。
+しかし、抽象的な内容だったり文章として成り立っていない場合実装できないことがあります。
+
+実装した機能達を振り返りたい場合、以下のコマンドを送ることで追加された関数名が一覧となって返ってきます。
+```
+@KitAI !display
+```
+
+command modeに変更したい場合は
+```
+@KitAI !command
+```
+とメンションし!commandコマンドを与えることでモードが変更されます。
 
 ### Example
 
