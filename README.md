@@ -25,13 +25,13 @@ git clone https://github.com/yukitakaGrid/KitAI.git
 
 次に、DiscordのDeveloperのwebページでbotの作成をし、トークンを発行します。
 https://discord.com/developers/applications
-
+    
 同時に、OpenAIのサイトでAPI Keyを発行します。
 https://platform.openai.com/docs/overview
 
-終わったらトークンを適切なプログラムに埋め込んでいきます。
-**discord token -> src/execute.py,src/edit.py,src/init.txt**
-**openai key -> src/openai_bot.py**
+終わったらトークンを適切なプログラムに埋め込んでいきます。  
+**discord token -> src/execute.py,src/edit.py,src/init.txt**  
+**openai key -> src/openai_bot.py**  
 
 最後に任意のチャンネルに作成したbotを招待し、
 ```
