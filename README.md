@@ -9,15 +9,35 @@ https://www.canva.com/design/DAFsDdJhtgQ/8kH_baIP2xj3stJ0DI2JRA/view#9
 ## Version
 
 OpenAI : gpt-4-turbo-preview
+Python : 3.12.1
 
-
-## How to use
+## How to set
 事前に必要なライブラリをインストールしておきます。
 ```
 pip install openai
 pip install discord.py
 ```
 
+このリモートリポジトリをクローンします。
+```
+git clone https://github.com/yukitakaGrid/KitAI.git
+```
+
+次に、DiscordのDeveloperのwebページでbotの作成をし、トークンを発行します。
+https://discord.com/developers/applications
+
+同時に、OpenAIのサイトでAPI Keyを発行します。
+https://platform.openai.com/docs/overview
+
+終わったらトークンを適切なプログラムに埋め込んでいきます。
+**discord token -> src/execute.py,src/edit.py,src/init.txt**
+**openai key -> src/openai_bot.py**
+
+最後に任意のチャンネルに作成したbotを招待し、
+```
+python main.py
+```
+で起動すれば完了です。
 
 ## Reference
 このbotはedit modeとcommand modeの2種類のモードが存在します。デフォルトはcommand modeです。
