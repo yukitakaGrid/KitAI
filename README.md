@@ -80,7 +80,7 @@ command modeに変更したい場合は
 @KitAI Yes
 ```
 
-<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_nyan.png width="50%" />  
+<img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KItAI_nyan.png width="50%" />  
 
 ##### example 2
 ```
