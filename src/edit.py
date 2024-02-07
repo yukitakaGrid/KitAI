@@ -6,7 +6,7 @@ import openai_bot
 import prefix
 
 # ボットのトークンをセット
-TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.G0Y_md.-YHA0DA98ezQu4Czy_rRHidMh3-hYBvr5HhRJA'
+TOKEN = 'あなたのトークンを入力してください'
 
 isPermissionRequested = 0
 keywords = []
