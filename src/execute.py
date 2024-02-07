@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 # ボットのトークンをセット
-TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.GsPWoV.DDtudM0sdfNe-JlUOa5eaEm_zDE1DNRdKL1OjQ'
+TOKEN = 'あなたのトークンを入力してください'
 
 isStand = 0
 
@@ -16,6 +16,7 @@ def run(e):
     # discordと接続した時に呼ばれる
     @bot.event
     async def on_ready():
+        print(discord.__version__)
         print(f'We have logged in as {bot.user} : execute')
         return
 
@@ -27,7 +28,7 @@ def run(e):
             isStand = 1
         elif(e==-1):
             await message.channel.send('Some error occurred, so I switched to emergency command mode. Check the console for details.')
-        print(f"{message.author} mended {bot.user} : execute")
+        print(f"{message.author} mended {bot.user} : execute\n{message.content}")
         if message.author == bot.user:
             return 
 
@@ -36,11 +37,16 @@ def run(e):
 +change edit mode!!
 ```''')
             await bot.close()
-            return
+            returns
+        
+        # チャンネルで"お前"という単語を含んでいたらメッセージを消去
+        if "お前" in message.content:
+            await message.delete()
+        return
 
     bot.run(TOKEN)
 
     # botインスタンスへの参照を削除
-    bot = None
+    del bot
 
     return

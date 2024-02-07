@@ -6,7 +6,7 @@ import openai_bot
 import prefix
 
 # ボットのトークンをセット
-TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.GsPWoV.DDtudM0sdfNe-JlUOa5eaEm_zDE1DNRdKL1OjQ'
+TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.G0Y_md.-YHA0DA98ezQu4Czy_rRHidMh3-hYBvr5HhRJA'
 
 isPermissionRequested = 0
 keywords = []
@@ -119,11 +119,11 @@ def run():
 
     Kitbot.run(TOKEN)
 
-    # botインスタンスへの参照を削除
-    Kitbot = None
-
     input_files = ["syntax_source/init.txt", "syntax_source/register_bot_func.txt", "syntax_source/finish.txt"]
     syntax_make.combine_files(input_files, "execute_combined.py")
     print("構文を結合し、ファイルを上書きしました")
+
+    # botインスタンスへの参照を削除
+    del Kitbot
 
     return

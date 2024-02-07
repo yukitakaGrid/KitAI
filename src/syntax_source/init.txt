@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 # ボットのトークンをセット
-TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.GsPWoV.DDtudM0sdfNe-JlUOa5eaEm_zDE1DNRdKL1OjQ'
+TOKEN = 'あなたのトークンを入力してください'
 
 def run():
     # ボットの接続準備
@@ -21,6 +21,8 @@ def run():
     # change_edit
     @bot.event
     async def on_message(message):
+        channel = bot.get_channel(message.channel.id)
+        message = await channel.fetch_message(message.id)
         print(f"{message.author} mended {bot.user} : execute_combined")
         if message.author == bot.user:
             return 
@@ -32,7 +34,4 @@ def run():
 ```''')
             await bot.close()
             return
-
-        # This is needed to process commands if you have any
-        await bot.process_commands(message)
     ##########

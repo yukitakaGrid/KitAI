@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 # ボットのトークンをセット
-TOKEN = 'MTE0MTY0ODQ2NjczNzYzNTM4OA.GsPWoV.DDtudM0sdfNe-JlUOa5eaEm_zDE1DNRdKL1OjQ'
+TOKEN = 'あなたのトークンを入力してください'
 
 def run():
     # ボットの接続準備
@@ -21,6 +21,8 @@ def run():
     # change_edit
     @bot.event
     async def on_message(message):
+        channel = bot.get_channel(message.channel.id)
+        message = await channel.fetch_message(message.id)
         print(f"{message.author} mended {bot.user} : execute_combined")
         if message.author == bot.user:
             return 
@@ -32,18 +34,17 @@ def run():
 ```''')
             await bot.close()
             return
-
-        # This is needed to process commands if you have any
-        await bot.process_commands(message)
     ##########
 
 
+    
+    
 
-    # on_voice_state_update
-    @bot.event
-    async def on_voice_state_update(member, before, after):
-        if before.channel is None and after.channel is not None:
-            await member.send("Hello!")
+        #on_message
+        if "お前" in message.content:
+            await message.delete()
+            warning_msg = f"{message.author.mention} その言葉遣いは適切ではありません。"
+            await message.channel.send(warning_msg)
         return
     
 
