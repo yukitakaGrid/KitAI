@@ -1,5 +1,5 @@
 # KitAI
-ハッカソンで制作したChat GPTが自動的にコマンド実装してくれるDiscord bot
+個人でハッカソンで制作したChat GPTが自動的にコマンド実装してくれるDiscord bot
 
 <img src=https://github.com/yukitakaGrid/KitAI/blob/main/img/KitAI_greed.png width="50%" />
 
