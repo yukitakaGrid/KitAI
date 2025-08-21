@@ -2,10 +2,18 @@ import os
 import openai
 
 class GPT4_0:
+    """
+    OpenAI GPT-4 APIを使用してDiscord bot機能を生成するクラス
+    ユーザーの自然言語要求をDiscord.py用のコードに変換する
+    """
     def __init__(self):
+        """GPT-4 APIの初期化とプロンプト設定"""
+        # OpenAI APIの認証情報設定
         openai.organization = os.environ.get("org-aSq6cg3kqopgOyZ3WUZneVYj")
         openai.api_key = "あなたのキーを入力してください"
 
+        # Discord bot用のコード生成プロンプト
+        # GPT-4に特化した指示とフォーマットを定義
         self.prompt_prefix = '''
         あなたはdiscord.pyのプログラマーです。求められた機能に対して、適するイベント関数を実装してください。なお説明はいらず、
         プログラムのみを出力してください。
@@ -24,17 +32,28 @@ class GPT4_0:
 '''
 
     def interaction(self,request_text):
-        # APIリクエストの設定
+        """
+        ユーザーの要求をGPT-4に送信してDiscord bot用のコードを生成
+        
+        Args:
+            request_text (str): ユーザーからの機能要求テキスト
+            
+        Returns:
+            str: GPT-4が生成したDiscord bot用のPythonコード
+        """
+        # GPT-4 APIリクエストの設定
         response = openai.ChatCompletion.create(
-            model="gpt-4-turbo-preview",  # GPTのエンジン名を指定します
+            model="gpt-4-turbo-preview",  # GPT-4 Turboモデルを使用
             messages=[
-                {"role":"system","content":self.prompt_prefix},
-                {"role":"user","content":request_text}
+                {"role":"system","content":self.prompt_prefix},  # システムプロンプト
+                {"role":"user","content":request_text}           # ユーザーの要求
             ]
         )
 
+        # 生成されたコードを取得
         text = response["choices"][0]["message"]["content"]
 
+        # デバッグ用出力
         print(f"CHatGPT:\n\n{text}")
 
         return text
