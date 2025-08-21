@@ -37,7 +37,7 @@ def run(e):
 +change edit mode!!
 ```''')
             await bot.close()
-            returns
+            return
         
         # チャンネルで"お前"という単語を含んでいたらメッセージを消去
         if "お前" in message.content:
