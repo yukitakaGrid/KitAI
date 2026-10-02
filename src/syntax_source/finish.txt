@@ -1,8 +1,0 @@
-    bot.run(TOKEN)
-
-    # botインスタンスへの参照を削除
-    del bot
-
-    return
-
-run()

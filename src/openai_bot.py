@@ -1,40 +1,26 @@
-import os
 import openai
+import rules
 
-class GPT4_0:
-    def __init__(self):
-        openai.organization = os.environ.get("org-aSq6cg3kqopgOyZ3WUZneVYj")
-        openai.api_key = "あなたのキーを入力してください"
+SYSTEM_PROMPT = """あなたはDiscord botのルール作成係です。コードは書かないでください。
+依頼を、次のJSONオブジェクト1つだけで返してください（説明文なし）。
+{"name": "短い名前", "trigger": {"type": "contains", "text": "含む言葉", "ignore_case": true},
+ "actions": [{"type": "reply", "text": "返信文"}, {"type": "delete_message"}]}
+使えるtriggerはcontainsのみ。使えるactionはreply（text必須）とdelete_message（textなし）のみ。
+actionは最大3個。これで表せない依頼には {"error": "理由"} を返してください。"""
 
-        self.prompt_prefix = '''
-        あなたはdiscord.pyのプログラマーです。求められた機能に対して、適するイベント関数を実装してください。なお説明はいらず、
-        プログラムのみを出力してください。
-        このプログラムはそのまま実行中のプログラムに組み込まれるのでなるべくコンパイルエラーの
-        なくすために組んだコードは一度目視でコンパイルエラーチェックしてから再度組み直してください
-        以下フォーマットです。なお、discord botの変数名はbotと定義するものとします。
-        イベントのコマンドエクステンションとasync defの関数は事前に用意してあるので除外してプログラムを組んでください。
-        
-        <@イベントのコマンドエクステンションをここに記述>
-        async def <関数名-識別できるように8桁の乱数を後ろにつける>():
-            <あなたが実装する関数の名前をコメントとしてここに記してください 例:#on_message_delete>
-            <以下プログラムの実装>
-            return <returnを必ず含む>
-        ########## <関数の区切りとして#を10個追加>
-        
-'''
+class RuleMaker:
+    def __init__(self, cfg, client=None):
+        self.model = cfg.openai_model
+        self.client = client or openai.OpenAI(api_key=cfg.openai_api_key,
+                                              organization=cfg.openai_org)
 
-    def interaction(self,request_text):
-        # APIリクエストの設定
-        response = openai.ChatCompletion.create(
-            model="gpt-4-turbo-preview",  # GPTのエンジン名を指定します
-            messages=[
-                {"role":"system","content":self.prompt_prefix},
-                {"role":"user","content":request_text}
-            ]
+    def make(self, request_text):
+        resp = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "system", "content": SYSTEM_PROMPT},
+                      {"role": "user", "content": request_text[:1000]}],
         )
-
-        text = response["choices"][0]["message"]["content"]
-
-        print(f"CHatGPT:\n\n{text}")
-
-        return text
+        text = resp.choices[0].message.content or ""
+        if '"error"' in text and '"trigger"' not in text:
+            raise rules.RuleError("AI がこの依頼は部品で表せないと返しました")
+        return rules.parse_ai_output(text)
