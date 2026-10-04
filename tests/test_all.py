@@ -7,6 +7,8 @@ import unittest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 import approval
 import logic
+import asyncio
+import bot
 import ratelimit
 import rules
 from config import Config
@@ -188,6 +190,54 @@ class PendingPersistence(unittest.TestCase):
             with open(self.p, "w") as f:
                 f.write(content)
             self.assertFalse(approval.Pending(clock=lambda: t[0], path=self.p).has(10))
+
+class FakeChan:
+    def __init__(self): self.sent = []
+    async def send(self, text, allowed_mentions=None): self.sent.append((text, allowed_mentions))
+
+class FakeMsg:
+    def __init__(self, content, uid=1, roles=(), ch=None, bot_=False, fail_delete=False):
+        self.content = content
+        self.author = type("A", (), {"id": uid, "bot": bot_,
+                                     "roles": [type("R", (), {"id": r}) for r in roles]})()
+        self.channel = ch or type("C", (FakeChan,), {"id": 10})()
+        self.deleted, self.fail = False, fail_delete
+    async def delete(self):
+        if self.fail: raise RuntimeError("Forbidden")
+        self.deleted = True
+
+class FakeUser:
+    def mentioned_in(self, m): return "<@bot>" in m.content
+
+class BotBridge(unittest.TestCase):
+    def setUp(self):
+        self.d = tempfile.TemporaryDirectory(); self.addCleanup(self.d.cleanup)
+        self.store = rules.RuleStore(os.path.join(self.d.name, "r.json"))
+        cfg = Config({"APPROVER_USER_IDS": "1", "KITAI_PENDING_PATH": os.path.join(self.d.name, "p.json")})
+        self.cfg, self.state = cfg, bot.build_state(cfg)
+    def go(self, m):
+        asyncio.run(bot.process(m, FakeUser(), self.state, self.cfg, self.store,
+                                FakeMaker(GOOD), "NOMENTIONS"))
+
+    def test_reply_uses_no_mentions_and_roles_mapped(self):
+        self.store.add(rules.validate_rule(GOOD))
+        m = FakeMsg("にゃ")
+        self.go(m)
+        self.assertEqual(m.channel.sent, [("にゃーん", "NOMENTIONS")])
+        self.assertEqual(bot.to_msg(FakeMsg("x", roles=(7,)), FakeUser())["role_ids"], [7])
+
+    def test_delete_failure_does_not_crash(self):
+        self.store.add(rules.validate_rule({**GOOD, "actions": [{"type": "delete_message"}]}))
+        self.go(FakeMsg("にゃ", fail_delete=True))
+
+    def test_edit_flow_through_bridge(self):
+        self.go(FakeMsg("<@bot> !edit"))
+        m = FakeMsg("<@bot> ねこ")
+        self.go(m)
+        self.assertIn("登録していい", m.channel.sent[0][0])
+        m.channel.sent.clear()
+        self.go(FakeMsg("yes", ch=m.channel))
+        self.assertIn("登録しました", m.channel.sent[0][0])
 
 class ConfigTest(unittest.TestCase):
     def test_missing(self):

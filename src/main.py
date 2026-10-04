@@ -2,13 +2,10 @@ import sys
 
 import discord
 
-import approval  # noqa: F401
-import logic
+import bot
 import openai_bot
 import rules
-from approval import Pending
 from config import Config
-from ratelimit import RateLimiter
 
 def main():
     cfg = Config()
@@ -17,9 +14,7 @@ def main():
         sys.exit("環境変数が足りません: " + ", ".join(missing))
     store = rules.RuleStore(cfg.rules_path)
     maker = openai_bot.RuleMaker(cfg)
-    state = {"edit": False, "pending": Pending(),
-             "ai_limiter": RateLimiter(3, 60),      # 1人あたり1分3回まで AI を呼ぶ
-             "rule_limiter": RateLimiter(5, 60)}    # 1チャンネルあたり1分5回までルールが動く
+    state = bot.build_state(cfg)
     intents = discord.Intents.default()
     intents.message_content = True
     client = discord.Client(intents=intents)
@@ -27,16 +22,7 @@ def main():
 
     @client.event
     async def on_message(message):
-        roles = [r.id for r in getattr(message.author, "roles", [])]
-        msg = {"author_id": message.author.id, "role_ids": roles,
-               "channel_id": message.channel.id, "content": message.content,
-               "mentioned": client.user.mentioned_in(message),
-               "is_bot": message.author.bot}
-        for act in logic.handle(msg, state, cfg, store, maker):
-            if act[0] == "send":
-                await message.channel.send(act[1], allowed_mentions=no_mentions)
-            else:
-                await message.delete()
+        await bot.process(message, client.user, state, cfg, store, maker, no_mentions)
 
     client.run(cfg.discord_token)
 
