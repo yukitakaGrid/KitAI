@@ -36,6 +36,9 @@ def handle(msg, state, cfg, store, maker):
         if state["edit"]:
             if not is_ok:
                 return [("send", "ルールの追加は承認者だけです。")]
+            ai_limit = state.get("ai_limiter")
+            if ai_limit and not ai_limit.allow(msg["author_id"]):
+                return [("send", "AI への依頼が多すぎます。少し待ってください。")]
             try:
                 rule = maker.make(content)
             except Exception as e:  # AI・検査どちらの失敗も、詳細は出さず知らせる
@@ -45,7 +48,11 @@ def handle(msg, state, cfg, store, maker):
             return [("send", "次のルールを登録していい？ Yes / No（5分有効）\n```\n"
                              + rules.describe(rule) + "\n```")]
     # 3) 登録済みルールの実行（bot 自身の発言は上で除外済み）
-    for r in rules.match(store.rules, content):
+    matched = rules.match(store.rules, content)
+    rule_limit = state.get("rule_limiter")
+    if matched and rule_limit and not rule_limit.allow(msg["channel_id"]):
+        return []  # 連発防止：制限中は黙って何もしない（案内の返信も連発になるため）
+    for r in matched:
         for a in r["actions"]:
             out.append(("send", a["text"]) if a["type"] == "reply" else ("delete",))
     return out

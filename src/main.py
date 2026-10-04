@@ -8,6 +8,7 @@ import openai_bot
 import rules
 from approval import Pending
 from config import Config
+from ratelimit import RateLimiter
 
 def main():
     cfg = Config()
@@ -16,7 +17,9 @@ def main():
         sys.exit("環境変数が足りません: " + ", ".join(missing))
     store = rules.RuleStore(cfg.rules_path)
     maker = openai_bot.RuleMaker(cfg)
-    state = {"edit": False, "pending": Pending()}
+    state = {"edit": False, "pending": Pending(),
+             "ai_limiter": RateLimiter(3, 60),      # 1人あたり1分3回まで AI を呼ぶ
+             "rule_limiter": RateLimiter(5, 60)}    # 1チャンネルあたり1分5回までルールが動く
     intents = discord.Intents.default()
     intents.message_content = True
     client = discord.Client(intents=intents)

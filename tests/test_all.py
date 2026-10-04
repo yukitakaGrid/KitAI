@@ -7,6 +7,7 @@ import unittest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 import approval
 import logic
+import ratelimit
 import rules
 from config import Config
 
@@ -130,6 +131,36 @@ class Logic(unittest.TestCase):
                         "actions": [{"type": "delete_message"}]})
         self.assertEqual(self.run_(msg("お前", bot=True, mentioned=False)), [])
         self.assertEqual(self.run_(msg("お前", mentioned=False)), [("delete",)])
+
+class RateLimit(unittest.TestCase):
+    def test_window_slides(self):
+        t = [0.0]
+        rl = ratelimit.RateLimiter(2, 10, clock=lambda: t[0])
+        self.assertTrue(rl.allow("a")); self.assertTrue(rl.allow("a"))
+        self.assertFalse(rl.allow("a"))
+        self.assertTrue(rl.allow("b"))  # キーごとに独立
+        t[0] = 10.0
+        self.assertTrue(rl.allow("a"))
+
+    def test_rule_replies_limited_per_channel(self):
+        d = tempfile.TemporaryDirectory(); self.addCleanup(d.cleanup)
+        store = rules.RuleStore(os.path.join(d.name, "r.json"))
+        store.add(rules.validate_rule(GOOD))
+        state = {"edit": False, "pending": approval.Pending(),
+                 "rule_limiter": ratelimit.RateLimiter(2, 60)}
+        run = lambda ch: logic.handle(msg("にゃ", mentioned=False, ch=ch), state, CFG, store, None)
+        self.assertTrue(run(10)); self.assertTrue(run(10))
+        self.assertEqual(run(10), [])
+        self.assertTrue(run(11))
+
+    def test_ai_requests_limited_per_user(self):
+        d = tempfile.TemporaryDirectory(); self.addCleanup(d.cleanup)
+        store = rules.RuleStore(os.path.join(d.name, "r.json"))
+        state = {"edit": True, "pending": approval.Pending(),
+                 "ai_limiter": ratelimit.RateLimiter(1, 60)}
+        h = lambda: logic.handle(msg("neko"), state, CFG, store, FakeMaker(GOOD))
+        self.assertIn("登録していい", h()[0][1])
+        self.assertIn("多すぎます", h()[0][1])
 
 class ConfigTest(unittest.TestCase):
     def test_missing(self):
