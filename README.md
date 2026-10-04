@@ -18,7 +18,7 @@ git clone https://github.com/yukitakaGrid/KitAI.git
 ```
 事前に必要なライブラリをインストールしておきます。
 ```
-pip install openai
+pip install "openai>=1"
 pip install discord.py
 ```
 
@@ -28,16 +28,22 @@ https://discord.com/developers/applications
 同時に、OpenAIのサイトでAPI Keyを発行します。
 https://platform.openai.com/docs/overview
 
-終わったらトークンを適切なプログラムに埋め込んでいきます。  
-**discord token -> src/execute.py,src/edit.py,src/init.txt**  
-**openai key -> src/openai_bot.py**  
-
+秘密情報はソースに書かず、環境変数で渡します（値をコミットしない）。
+```
+export DISCORD_TOKEN=...
+export OPENAI_API_KEY=...
+export APPROVER_USER_IDS=123,456     # 承認できる人の Discord ユーザーID（カンマ区切り）
+export APPROVER_ROLE_IDS=789         # 任意：承認できるロールID
+# 任意: OPENAI_ORG_ID, OPENAI_MODEL, KITAI_RULES_PATH
+```
 最後に任意のチャンネルに作成したbotを招待し、
 ```
-cd src
-python main.py
+python src/main.py
 ```
-で起動すれば完了です。
+で起動すれば完了です。試験は `python -m unittest discover -s tests`。
+
+# 仕組み（安全のための設計）
+AI は**コードではなく JSON のルール**（条件 contains ＋ 動作 reply/delete_message）を出します。bot は検査を通ったルールだけを解釈して動かし、生成物を実行しません。ルールの追加・モード切替は承認者だけ、承認は「Yes/No」の完全一致のみです。
 
 # Reference
 このbotはedit modeとcommand modeの2種類のモードが存在します。デフォルトはcommand modeです。
