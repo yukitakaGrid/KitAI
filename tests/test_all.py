@@ -209,7 +209,7 @@ class FakeMsg:
 class FakeUser:
     def mentioned_in(self, m): return "<@bot>" in m.content
 
-class BotBridge(unittest.TestCase):
+class BotCase(unittest.TestCase):
     def setUp(self):
         self.d = tempfile.TemporaryDirectory(); self.addCleanup(self.d.cleanup)
         self.store = rules.RuleStore(os.path.join(self.d.name, "r.json"))
@@ -218,6 +218,8 @@ class BotBridge(unittest.TestCase):
     def go(self, m):
         asyncio.run(bot.process(m, FakeUser(), self.state, self.cfg, self.store,
                                 FakeMaker(GOOD), "NOMENTIONS"))
+
+class BotBridge(BotCase):
 
     def test_reply_uses_no_mentions_and_roles_mapped(self):
         self.store.add(rules.validate_rule(GOOD))
@@ -238,6 +240,52 @@ class BotBridge(unittest.TestCase):
         m.channel.sent.clear()
         self.go(FakeMsg("yes", ch=m.channel))
         self.assertIn("登録しました", m.channel.sent[0][0])
+
+class BotAbnormal(BotCase):
+    """橋渡しを通した異常系。"""
+    def ask(self, text, uid=1, ch=None, maker=None):
+        m = FakeMsg(text, uid=uid, ch=ch)
+        asyncio.run(bot.process(m, FakeUser(), self.state, self.cfg, self.store,
+                                maker or FakeMaker(GOOD), "NOMENTIONS"))
+        return m
+
+    def request_rule(self):
+        self.ask("<@bot> !edit")
+        m = self.ask("<@bot> ねこ")
+        return m.channel
+
+    def test_non_approver_yes_is_denied_and_pending_survives(self):
+        ch = self.request_rule()
+        self.ask("yes", uid=99, ch=ch)
+        self.assertIn("決められた承認者だけ", ch.sent[-1][0])
+        self.assertEqual(self.store.rules, [])
+        self.ask("yes", uid=1, ch=ch)  # 承認者なら、まだ通る
+        self.assertEqual(len(self.store.rules), 1)
+
+    def test_expired_pending_is_ignored(self):
+        t = [1000.0]
+        self.state["pending"] = approval.Pending(clock=lambda: t[0])
+        ch = self.request_rule()
+        t[0] += approval.TTL_SECONDS + 1
+        n = len(ch.sent)
+        self.ask("yes", uid=1, ch=ch)
+        self.assertEqual(len(ch.sent), n)  # 何も返さない
+        self.assertEqual(self.store.rules, [])
+
+    def test_ai_failure_and_bad_output_reported_without_detail(self):
+        self.ask("<@bot> !edit")
+        for exc in (RuntimeError("secret-detail-123"), rules.RuleError("検査に通りません")):
+            m = self.ask("<@bot> ねこ", maker=FakeMaker(exc=exc))
+            self.assertIn("作れませんでした", m.channel.sent[-1][0])
+            self.assertNotIn("secret-detail-123", m.channel.sent[-1][0])
+        self.assertFalse(self.state["pending"].has(10))
+
+    def test_broken_or_tampered_pending_file_at_startup(self):
+        for content in ("{broken", json.dumps({"10": [1, {**GOOD, "code": "x"}, 9e12]})):
+            with open(self.cfg.pending_path, "w") as f:
+                f.write(content)
+            st = bot.build_state(self.cfg)
+            self.assertFalse(st["pending"].has(10))
 
 class ConfigTest(unittest.TestCase):
     def test_missing(self):
