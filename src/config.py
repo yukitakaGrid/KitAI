@@ -17,6 +17,7 @@ class Config:
             self.approver_user_ids = _ids("APPROVER_USER_IDS")
             self.approver_role_ids = _ids("APPROVER_ROLE_IDS")
             self.rules_path = os.environ.get("KITAI_RULES_PATH", "rules.json")
+            self.pending_path = os.environ.get("KITAI_PENDING_PATH", "pending.json")
         finally:
             if env is not None:
                 os.environ = old

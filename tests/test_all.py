@@ -162,6 +162,33 @@ class RateLimit(unittest.TestCase):
         self.assertIn("登録していい", h()[0][1])
         self.assertIn("多すぎます", h()[0][1])
 
+class PendingPersistence(unittest.TestCase):
+    def setUp(self):
+        self.d = tempfile.TemporaryDirectory(); self.addCleanup(self.d.cleanup)
+        self.p = os.path.join(self.d.name, "pending.json")
+
+    def test_survives_restart_and_still_needs_approver(self):
+        t = [1000.0]
+        approval.Pending(clock=lambda: t[0], path=self.p).put(10, 1, rules.validate_rule(GOOD))
+        again = approval.Pending(clock=lambda: t[0], path=self.p)
+        self.assertEqual(again.decide(10, "yes", 5, [], CFG)[0], "denied")
+        self.assertEqual(again.decide(10, "yes", 1, [], CFG)[0], "approved")
+        self.assertEqual(approval.Pending(clock=lambda: t[0], path=self.p).has(10), False)
+
+    def test_expired_dropped_on_load(self):
+        t = [1000.0]
+        approval.Pending(clock=lambda: t[0], path=self.p).put(10, 1, rules.validate_rule(GOOD))
+        t[0] += approval.TTL_SECONDS + 1
+        self.assertFalse(approval.Pending(clock=lambda: t[0], path=self.p).has(10))
+
+    def test_tampered_or_broken_file_ignored(self):
+        t = [1000.0]
+        evil = {"10": [1, {**GOOD, "code": "import os"}, 2000.0]}
+        for content in (json.dumps(evil), "{broken"):
+            with open(self.p, "w") as f:
+                f.write(content)
+            self.assertFalse(approval.Pending(clock=lambda: t[0], path=self.p).has(10))
+
 class ConfigTest(unittest.TestCase):
     def test_missing(self):
         self.assertEqual(len(Config({}).missing()), 3)
